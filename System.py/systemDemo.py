@@ -1,4 +1,3 @@
-import os 
 import psutil
 import time
 from playsound import playsound
@@ -34,16 +33,6 @@ def monitor_system(cpu_threshold, ram_threshold, disk_threshold):
        print(f"Disk usage: {disk_usage}%")
        print("-" * 30)
     
-       if cpu_usage > cpu_threshold:
-                print(f"ALARM: CPU-användning över gränsen! ({cpu_usage}%)")
-                playsound('alarm.mav')
-       if ram_usage > ram_threshold:
-                print(f"ALARM: RAM-användning över gränsen! ({ram_usage}%)")
-                playsound('alarm.mav')
-       if disk_usage > disk_threshold:
-                print(f"ALARM: Disk-användning över gränsen! ({disk_usage}%)")
-                playsound('alarm.mav')
-
        time.sleep(3)
         # Option to return to the main menu
        if input("Tryck 'm' för att återgå till huvudmenyn, eller valfri tangent för att fortsätta: ").lower() == 'm':
