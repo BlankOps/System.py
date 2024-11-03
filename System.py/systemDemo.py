@@ -1,6 +1,32 @@
 import psutil
 import time
-from playsound import playsound
+#from playsound import playsound
+
+class Alarm:
+    def __init__(self, threshold, name):
+        self.threshold = threshold
+        self.name = name
+
+    def check(self, usage):
+        if usage > self.threshold:
+            self.trigger_alarm(usage)
+
+    def trigger_alarm(self, usage):
+        print(f"ALARM: {self.name} användning över gränsen! ({usage}%)")
+        playsound('alarm.wav')
+
+class CPUAlarm(Alarm):
+    def __init__(self, threshold):
+        super().__init__(threshold, "CPU")
+
+class RAMAlarm(Alarm):
+    def __init__(self, threshold):
+        super().__init__(threshold, "RAM")
+
+class DiskAlarm(Alarm):
+    def __init__(self, threshold):
+        super().__init__(threshold, "Disk")
+
 
 def menu():
     print("[1] Starta övervakningsläge")
@@ -8,6 +34,7 @@ def menu():
     print("[3] Skapa larm")
     print("[4] Visa larm")
     print("[5] Starta övervakning")
+    print("[6] Avsluta övervakningsläget")
     print("[0] Avsluta programmet.")
 
 def get_cpu_usage():
@@ -41,8 +68,10 @@ def monitor_system(cpu_threshold, ram_threshold, disk_threshold):
     print ("monitoring stopped.")
 
 def main():
+    from threading import Event
     thresholds = {"CPU": None, "RAM": None, "Disk": None}
     övervakning_aktiv = False
+    stop_monitoring = Event()
     while True:
         menu()
         option = int(input("Select your option: "))
@@ -79,6 +108,11 @@ def main():
                     monitor_system(thresholds["CPU"], thresholds["RAM"], thresholds["Disk"])
             else:
                 print("Övervakningen EJ startad. Tryck 1 för att starta övervakning.")
+        elif option == 6:
+            if övervakning_aktiv:
+                print("Stoppar övervakningen...") 
+                stop_monitoring.set()
+                övervakning_aktiv = False
         elif option == 0:
             print("Tack för att du använde programmet. Hejdå.")
             break
